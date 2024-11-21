@@ -38,17 +38,30 @@ ST_5 <- list()
 for(i in 1:length(dirs)){
   ST_5[[i]] <- mask(ST_Files[[i]], ST_mask[[i]])
 }
-plot(ST_5[[4]])
+
+#how do I multiply and add the additive offset?
+((ST_5[[2]]*0.00341802) + 149) - 273.15
+#thoughts: how do I check for outliers? How do I properly plot this? -> the color ramp values don't align. 
+###also the values seem superrr low. 
+plot(ST_5[[2]])
+
+#playing around with checking raster values: this doesn't work! how do I know if what I am doing is correct?
+coords <- matrix(c(337567, 4711111), ncol = 2)
+values <- extract(ST_5[[2]], coords)
+
 
 date_5 <- character()
 for(i in 1:length(dirs)){
   date_5[i] <- strsplit(fileB6[i],"_")[[1]][4]
 }
 
+plot(ST_5[[4]])
+
 date_L5 <- ymd(date_5)
 
+ST_5[1]
 #next thing, multiply the scale factor and additive offset 
-L5 <- c(ST_5)
+L5 <- c(ST_5)*0.00341802))+149
 
 
 ##landsat 8/9
@@ -87,7 +100,7 @@ for(i in 1:length(dirs8)){
   ST_8[[i]] <- mask(ST_Files8[[i]], ST_mask8[[i]])
 }
 #this isn't plotting! 
-plot(ST_8[[1]])
+plot(ST_8[[3]])
 
 ##mask = 2720
 date_8 <- character()
@@ -95,7 +108,7 @@ for(i in 1:length(dirs8)){
   date_8[i] <- strsplit(fileB10_8[i],"_")[[1]][4]
 }
 
-date_L5 <- ymd(date_5)
+date_L5 <- as.numeric(ymd(date_5))
 
 ##read in NLCD data 
 NLCD2001 <- rast("F:/Thesis/NLCD/NLCD_2001_Land_Cover_L48_20210604_srXvgfE7CJBW6GEcHH5B.tiff")
@@ -104,10 +117,13 @@ NLCD2011 <- rast("F:/Thesis/NLCD/NLCD_2011_Land_Cover_L48_20210604_srXvgfE7CJBW6
 NLCD2016 <- rast("F:/Thesis/NLCD/NLCD_2016_Land_Cover_L48_20210604_srXvgfE7CJBW6GEcHH5B.tiff")
 NLCD2021 <- rast("F:/Thesis/NLCD/NLCD_2021_Land_Cover_L48_20230630_srXvgfE7CJBW6GEcHH5B.tiff")
 
-Landsat_average <- character()
-for(i in 1:length(dirs)){
-  date_[i] <- strsplit(fileB10_8[i],"_")[[1]][4]
-}
+fileB10_8[2]
+Landsat_average <- numeric()
 
+#the goal here is to access the date from each file! 
+for(i in 1:length(dirs)){
+  date_L5[i] <- strsplit(fileB10_8[i],"_")[[1]][4]
+}
+print(date_L5[4])
 
 
