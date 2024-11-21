@@ -1,7 +1,11 @@
+install.packages("sf")
+install.packages("sp")
 library(dplyr)
 library(terra)
 library(ggplot2)
 library(lubridate)
+library(sf)
+library(sp)
 
 dirs <- list.dirs("F:/Thesis/Landsat5")[-1]
 dirs
@@ -59,10 +63,20 @@ plot(ST_5[[4]])
 
 date_L5 <- ymd(date_5)
 
-ST_5[1]
-#next thing, multiply the scale factor and additive offset 
-L5 <- c(ST_5)*0.00341802))+149
+ST_5[[1]]
+#next thing, multiply the scale factor and additive offset. Apply function to list of rasters. Can't just do single calc
+L5 <- ((ST_5)*0.00341802)+149
 
+L5Function <- function(x){
+  ((x)*0.00341802)+149
+}
+
+L5Calc <- list()
+for(i in 1:length(dirs)){
+  L5Calc[[i]] <- (((ST_5[[i]])*0.00341802)+149) - 273.15
+}
+
+plot(L5Calc[[1]])
 
 ##landsat 8/9
 dirs8 <- list.dirs("F:/Thesis/Landsat 8")[-1]
@@ -126,4 +140,14 @@ for(i in 1:length(dirs)){
 }
 print(date_L5[4])
 
+NationalUrbanArea <- st_read("F:/Thesis/tl_2020_us_uac20/tl_2020_us_uac20.shp")
 
+UticaBoundary <- NationalUrbanArea[NationalUrbanArea$NAME20 == "Utica, NY",]
+##plot(UticaBoundary)
+##data model for SF doesn't work well with terra. Conversion is necessary. 
+
+usp <- as(UticaBoundary, "Spatial")
+
+#converted the sf format into terra 
+UticaBoundaryT <- vect(usp)
+plot(ST_8[[3]])
